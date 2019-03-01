@@ -1,39 +1,36 @@
-# 使用 Plugin
+# 使用 DevServer
 
-plugin是用来扩展webpack功能的，这个webpack带来很大的灵活性。
-webpack在构建流程中提供了不同的钩子，plugin则通过注入这些钩子进行实现。
+## 提供开发环境服务
 
-## 提取css文件
-上节在index.js文件中引入了一个css文件，并将其打包输出到bundle.js中，而通常情况下，我们需要将css文件单独提取出来，这样不仅让文件目录显得直观，并且可以使页面加载得以优化。
+除了能让webpack正常运行，通常在实际开发中还需要以下功能：
+- 提供 HTTP 服务而不是使用本地文件预览
+- 监听文件的变化并自动刷新网页，做到实时预览
+- 支持 Source Map，以方便调试
 
-### 配置
+## 使用webpack-dev-server
+webpack-dev-server 提供了一个简单的 web 服务器，并且能够实时重新加载(live reloading)。设置以下：
 
-在原来的基础上，添加以下配置
+> cnpm install --save-dev webpack-dev-server
+
+在webpack.config.js中，添加
 ```
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
-module.exports = {
+ module.exports = {
   ...
-  module: {
-    rules: [
-      {
-        // 用正则去匹配要用该 loader 转换的 CSS 文件
-        test: /\.css$/,
-        use: [
-          {loader: MiniCssExtractPlugin.loader},
-          'css-loader'
-        ]
-      }
-    ]
+  devServer: {
+    contentBase: './dist'
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      // 从 .js 文件中提取出来的 .css 文件的名称
-      filename: `[name].css`,
-    })
-  ]
-};
-````
+  ...
+}
+```
+以上配置告知 webpack-dev-server, 在 localhost:8080 下建立服务，将 dist 目录下的文件，作为可访问文件。
 
-下载依赖
-> cnpm install --save-dev mini-css-extract-plugin
+在package.json中，添加script脚本
+
+```
+"scripts": {
+  "server": "webpack-dev-server --open"
+}
+```
+
+执行命令 npm run server 后，服务器则开始运行，浏览器自动打开访问dist目录。当源文件发生变动时，webpack会自动重新build，浏览器会自动刷新。
+

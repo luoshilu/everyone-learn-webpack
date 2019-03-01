@@ -27,5 +27,8 @@ module.exports = {
       // 从 .js 文件中提取出来的 .css 文件的名称
       filename: `[name].css`,
     })
-  ]
+  ],
+  devServer: {
+    contentBase: './dist'
+  }
 };
