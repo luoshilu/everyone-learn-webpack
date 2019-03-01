@@ -1,48 +1,39 @@
-# 使用Loader加载css
+# 使用 Plugin
 
-在js中，导入css模块
+plugin是用来扩展webpack功能的，这个webpack带来很大的灵活性。
+webpack在构建流程中提供了不同的钩子，plugin则通过注入这些钩子进行实现。
 
+## 提取css文件
+上节在index.js文件中引入了一个css文件，并将其打包输出到bundle.js中，而通常情况下，我们需要将css文件单独提取出来，这样不仅让文件目录显得直观，并且可以使页面加载得以优化。
+
+### 配置
+
+在原来的基础上，添加以下配置
 ```
-// index.js
-// 通过 CommonJS 规范导入 CSS 模块
-require('./css/main.css');
-```
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-npm start
-
-执行后会报错
-
-```
-ERROR in ./src/css/main.css 1:0
-Module parse failed: Unexpected character '#' (1:0)
-You may need an appropriate loader to handle this file type
-...
-```
-
-这时需要配置loader，用于处理非javascript的文件模块(webpack开箱支持javascript模块)。
-
-## 配置css loader
-
-Loader有3种使用方式，分别为：配置，内联，CLI，通常都使用配置(webpack.config.js)。
-
-```
+module.exports = {
+  ...
   module: {
     rules: [
       {
         // 用正则去匹配要用该 loader 转换的 CSS 文件
         test: /\.css$/,
-        use: ['style-loader','css-loader']
+        use: [
+          {loader: MiniCssExtractPlugin.loader},
+          'css-loader'
+        ]
       }
     ]
-  }
-```
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      // 从 .js 文件中提取出来的 .css 文件的名称
+      filename: `[name].css`,
+    })
+  ]
+};
+````
 
-如上配置告诉 Webpack 在遇到以 .css 结尾的文件时先使用 css-loader 读取 CSS 文件，再交给 style-loader 把 CSS 内容注入到 JavaScript 里。
-
-值得注意的是，loader有一些特征：
-
-- use的值是loader的名称字符串数组或对象数组
-- loader接收查询参数，用于对 loader 传递配置，也可使用options对象进行配置
-
-## 安装依赖
-> cnpm i --save-dev style-loader css-loader
+下载依赖
+> cnpm install --save-dev mini-css-extract-plugin
