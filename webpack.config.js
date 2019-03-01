@@ -1,5 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   // JavaScript 执行入口文件
@@ -16,7 +17,7 @@ module.exports = {
         // 用正则去匹配要用该 loader 转换的 CSS 文件
         test: /\.css$/,
         use: [
-          {loader: MiniCssExtractPlugin.loader}, // or style-loader
+          'style-loader', // or style-loader
           'css-loader'
         ]
       }
@@ -26,9 +27,12 @@ module.exports = {
     new MiniCssExtractPlugin({
       // 从 .js 文件中提取出来的 .css 文件的名称
       filename: `[name].css`,
-    })
+    }),
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin()
   ],
   devServer: {
-    contentBase: './dist'
+    contentBase: './dist',
+    hot: true
   }
 };

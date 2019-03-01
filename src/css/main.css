@@ -1,4 +1,10 @@
-#app{
+#app {
   text-align: center;
-  color: red;
+  color: #FFF;
+}
+#app2 {
+  text-align: center;
+}
+body {
+  background: red;
 }
