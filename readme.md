@@ -1,44 +1,48 @@
-## 环境构建
+# 使用Loader加载css
 
-> cnpm install --save-dev webpack
-> cnpm install --save-dev webpack-cli
-
-## 编辑package.json
+在js中，导入css模块
 
 ```
-{
-  "name": "webpack-base-use",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "start": "webpack --mode development" // 使用mode指定开发环境development
-  },
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
+// index.js
+// 通过 CommonJS 规范导入 CSS 模块
+require('./css/main.css');
+```
+
+npm start
+
+执行后会报错
+
+```
+ERROR in ./src/css/main.css 1:0
+Module parse failed: Unexpected character '#' (1:0)
+You may need an appropriate loader to handle this file type
+...
+```
+
+这时需要配置loader，用于处理非javascript的文件模块(webpack开箱支持javascript模块)。
+
+## 配置css loader
+
+Loader有3种使用方式，分别为：配置，内联，CLI，通常都使用配置(webpack.config.js)。
+
+```
+  module: {
+    rules: [
+      {
+        // 用正则去匹配要用该 loader 转换的 CSS 文件
+        test: /\.css$/,
+        use: ['style-loader','css-loader']
+      }
+    ]
   }
-}
 ```
 
-## 启动
+如上配置告诉 Webpack 在遇到以 .css 结尾的文件时先使用 css-loader 读取 CSS 文件，再交给 style-loader 把 CSS 内容注入到 JavaScript 里。
 
-> npm start
+值得注意的是，loader有一些特征：
 
-```
-> webpack-base-use@1.0.0 start C:\Users\qingyi\Desktop\熟练使用webpack\webpack-base
-> webpack --mode development
+- use的值是loader的名称字符串数组或对象数组
+- loader接收查询参数，用于对 loader 传递配置，也可使用options对象进行配置
 
-Hash: aa5de79504e73cd5c150
-Version: webpack 4.29.6
-Time: 156ms
-Built at: 2019-03-01 16:38:35
-Asset      Size  Chunks             Chunk Names
-main.js  4.33 KiB    main  [emitted]  main
-Entrypoint main = main.js
-[./src/index.js] 93 bytes {main} [built]
-[./src/show.js] 181 bytes {main} [built]
-
-```
+## 安装依赖
+> cnpm i --save-dev style-loader css-loader
