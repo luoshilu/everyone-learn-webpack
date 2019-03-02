@@ -113,7 +113,9 @@ log.js:24 [HMR] App is up to date.
 但是，你会发现，点击界面按钮过后，控制台输出的结果还是 *I get called from parent1.js!*，因为其按钮元素的监听事件并没有被改变。
 所以，这时需要在回调函数中，重新对按钮进行监听。
 ```
-document.body.appendChild(component());
+//document.body.appendChild(component());
+let element = component(); // 当 parent1.js 改变导致页面重新渲染时，重新获取渲染的元素
+document.body.appendChild(element);
 
 if (module.hot) {
   module.hot.accept('./parent1.js', function() {
