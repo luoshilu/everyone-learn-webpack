@@ -23,6 +23,7 @@ module.exports = {
       }
     ]
   },
+  devtool: 'inline-source-map',
   plugins: [
     new MiniCssExtractPlugin({
       // 从 .js 文件中提取出来的 .css 文件的名称

@@ -14,7 +14,10 @@ function component() {
   return element;
 }
 
-document.body.appendChild(component());
+// document.body.appendChild(component());
+let element = component(); // 当 parent1.js 改变导致页面重新渲染时，重新获取渲染的元素
+document.body.appendChild(element);
+
 
 parent2();
 // parent1();
