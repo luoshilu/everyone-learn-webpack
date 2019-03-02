@@ -1,13 +1,15 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
   // JavaScript 执行入口文件
   entry: './src/index.js',
   output: {
     // 把所有依赖的模块合并输出到一个 bundle.js 文件
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     // 输出文件都放到 dist 目录下
     path: path.resolve(__dirname, './dist'),
   },
@@ -17,7 +19,7 @@ module.exports = {
         // 用正则去匹配要用该 loader 转换的 CSS 文件
         test: /\.css$/,
         use: [
-          'style-loader',
+          {loader: MiniCssExtractPlugin.loader},
           'css-loader'
         ]
       },
@@ -36,9 +38,14 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   plugins: [
+    new CleanWebpackPlugin(['dist']),
     new MiniCssExtractPlugin({
       // 从 .js 文件中提取出来的 .css 文件的名称
-      filename: `[name].css`,
+      filename: `[name].css`
+    }),
+    new HtmlWebpackPlugin({
+      title: "Output management",
+      template: "./index.html"
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin()
