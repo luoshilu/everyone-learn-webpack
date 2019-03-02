@@ -1,25 +1,68 @@
-## 使用sourcemap
+## 加载资源
 
-当执行打包后的文件时，若发生了错误，开发人员需要准确知道错误来自哪个源文件，source map功能可以做到这一点，这对于开发人员来是很有帮助的。
+在2，3节中，已经尝试过将css作为模块进行加载，并将其内容作为单一文件提取出来。
+其实除了css以外，还有图片，文字，数据等资源都作为模块进行加载。
 
-在webpack.config.js中，配置：
+### 加载图片
+
+现在，尝试着在css中，引入一个图片
+
 ```
-devtool: 'inline-source-map',
+// css/main.css
+.head-img {
+  width: 150px;
+  height: 150px;
+  background-image: url('../img/head.png')
+}
+```
 
 ```
-devtool的选项值决定着如何生成source map。
-通常情况下：
-开发环境，使用 *eval-source-map*
-特定场景，使用 *inline-source-map*
-生产环境，使用 (node)(省略devtool选项)
+// index.html
+<header>
+    <div class="head-img"></div>
+</header>
+```
 
-主要几个值的特征：
-- eval  ： 使用eval()执行模块，不生成source-map；
-- eval-source-map  ：使用eval()执行模块，source map 转换为 DataUrl 后添加到 bundle 的 eval() 中，可正确映射原始代码；
-- source-map：整个 source map 作为一个单独的文件生成(filename.js.map)，可正确映射原始代码；
-- inline-source-map ： source map 转换为 DataUrl 后添加到 bundle 中，可正确映射原始代码；
-- (none)： 不生成source-map。
+如果此时执行npm start，则会得到一个错误
+> ERROR in ./src/img/head.png 1:0
+Module parse failed: Unexpected character '�' (1:0)
+You may need an appropriate loader to handle this file type
+...
 
-> 注： 执行webpack --mode development命令的默认配置devtool：eval，执行webpack --mode production命令的默认配置devtool：(none)。
+之前加载css时，我们需要 style-loader 和css-loader来处理css文件，而对于图片，则需要file-loader来处理。
 
-配置详情见 [devtool](https://www.webpackjs.com/configuration/devtool/).
+下载file-loader
+> cnpm install --save-dev file-loader
+
+配置webpack.config.js
+```
+  rules: [
+    ...
+    {
+      test: /\.(png|svg|jpg|gif)$/,
+      use: ['file-loader']
+    }
+  ]
+```
+再次执行npm start，如果一切顺利，在dist目录下则生成一张图片文件，文件名类似于*0b51225ae...5892a.png*。
+在浏览器中预览index.html，就可看到效果，检查图片元素，打包文件的图片引用链接改变为 *0b51225ae...5892a.png* 的链接。
+
+通常情况下，我们需要将图片单独存到一个目录并且保持源文件的名称，配置file-loader如下：
+```
+  rules: [
+    ...
+    {
+      test: /\.(png|svg|jpg|gif)$/,
+      use: [
+        {
+          loader: 'file-loader',
+          options: {
+            name: `img/[name].[ext]`,
+          }
+        }
+      ]
+    }
+  ]
+```
+
+若需要对图片进行压缩优化等处理，查看 [image-webpack-loader](https://github.com/tcoopman/image-webpack-loader) 和 [url-loader](https://www.webpackjs.com/loaders/url-loader/)。

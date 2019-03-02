@@ -1,7 +1,7 @@
 import child from './child'
 export default function parent2() {
    console.log('parent2.js运行了1');
-   consleo.log(child());
+   console.log(child());
    console.log('Updating print.js2..')
 
    if (module.hot) {

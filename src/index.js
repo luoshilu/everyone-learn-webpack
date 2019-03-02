@@ -21,7 +21,7 @@ document.body.appendChild(element);
 
 parent2();
 // parent1();
-// show('webpack1')
+show('webpack1')
 
 if (module.hot) {
   module.hot.accept('./parent1.js', function() {

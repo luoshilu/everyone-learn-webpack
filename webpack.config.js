@@ -17,8 +17,19 @@ module.exports = {
         // 用正则去匹配要用该 loader 转换的 CSS 文件
         test: /\.css$/,
         use: [
-          'style-loader', // or style-loader
+          'style-loader',
           'css-loader'
+        ]
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: `img/[name].[ext]`,
+            }
+          }
         ]
       }
     ]
