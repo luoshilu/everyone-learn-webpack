@@ -1,39 +1,41 @@
-## 插件工具
+## 解决问题
 
-### HtmlWebpackPlugin
+### {loader: MiniCssExtractPlugin.loader}和 style-loader 共存问题
 
-但现在为止，我们要访问的文件index.html一直是手动引入外部文件，比如bundle.js、main.css，而当这些文件名发生改变或目录发生改变，我们需要手动去修改index.html，非常不方便。
-HtmlWebpackPlugin插件的功能就是帮我们自动修改index.html中这些被更改的文件名。
+{loader: MiniCssExtractPlugin.loader} 的作用是将css从js抽取出来，而style-loader有为CSS提供热模块加载的功能，当两者共存时，功能会受到影响。
 
-更新依赖
-> cnpm install --save-dev html-webpack-plugin
+所以，我们需要判断当前构建环境，开发环境使用 style-loader，生产环境使用 MiniCssExtractPlugin.loader。
+
+修改package.json script
+```
+  "scripts": {
+    "start": "webpack --mode development",
+    "build": "webpack --mode production --env.NODE_ENV=local --env.production --progress",
+    "server": "webpack-dev-server --open --env.NODE_ENV=local --env.development --progress"
+  },
+```
+
+webpack.config.js
 
 ```
-// webpack.config.js
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-module.exports = {
-  plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Output Management',
-      template: 'index.html' // 设置一个html模板，指定body内容。
-    })
-  ],
+module.exports = env => {
+  const isDev = !env || !env.production
+
+  return  {
+    module: {
+      rules: [
+        {
+          // 用正则去匹配要用该 loader 转换的 CSS 文件
+          test: /\.css$/,
+          use: [
+            isDev? 'style-loader' : MiniCssExtractPlugin.loader,
+            'css-loader'
+          ]
+        },
+      ]
+    }
+  }
 }
 ```
 
-### 清除dist目录
-每次build过后，dist目录总会余留以前留下的文件，所以，在build前，我们将dist目录清空。
 
-更新依赖
-> npm install clean-webpack-plugin --save-dev
-
-```
-// webpack.config.js
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-  module.exports = {
-    ...
-    plugins: [
-      new CleanWebpackPlugin(['dist'])
-    ]
-  };
-```
