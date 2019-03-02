@@ -1,3 +1,14 @@
+@font-face {
+  font-family: "my-font";
+  src: url('../font/Arvo-Regular.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+* {
+  font-family: 'my-font'!important;
+}
+
 #app {
   text-align: center;
   color: red;
