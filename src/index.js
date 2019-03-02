@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import parent2 from './parent2.js';
-import show from './show.js';
-import parent1 from './parent1.js';
+import show from './js/show.js';
+import parent1 from './js/parent1.js';
 import './css/main.css'
 
 import data from './data/data.xml'
@@ -22,13 +21,11 @@ function component() {
 let element = component(); // 当 parent1.js 改变导致页面重新渲染时，重新获取渲染的元素
 document.body.appendChild(element);
 
-
-parent2();
 // parent1();
 show('webpack1')
 
 if (module.hot) {
-  module.hot.accept('./parent1.js', function() {
+  module.hot.accept('./js/parent1.js', function() {
     console.log('Accepting the updated parent1 module!');
     // parent1();
     document.body.removeChild(element);
@@ -36,7 +33,7 @@ if (module.hot) {
     document.body.appendChild(element);
   })
 
-  // module.hot.accept('./show.js', function() {
+  // module.hot.accept('./js/show.js', function() {
   //   console.log('Accepting the updated show module!');
   //   show('webpack1')
   // })

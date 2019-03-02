@@ -1,39 +1,30 @@
-## 资源管理
+## 管理输出
 
-### 加载数据
+webpack中有两个重要的概念：入口和出口。且规定只能以js文件作为入口和出口。
 
-webpack可以加载的资源还有数据，例如：json文件,CSV,TSV和XML，其中json时内置支持的，而CSV,TSV,XML则需要loader的支持。
-
-下载loader
-> cnpm install --save-dev csv-loader xml-loader
+入口分为单一入口和多个入口，之前的用例中，都是使用单一入口，下面将尝试更改为多个入口
 
 webpack.config.js
-
 ```
-module: {
-  rules: [
-    {
-      test: /\.(csv|tsv)$/,
-      use: [
-        'csv-loader'
-      ]
-    },
-    {
-      test: /\.xml$/,
-      use: [
-        'xml-loader'
-      ]
-    }
-  ]
-}
+  entry: {
+    app: './src/app.js', // app为别名
+    index: './src/index.js' // index为别名
+  },
+  output: {
+    filename: '[name].bundle.js',
+    // 输出文件都放到 dist 目录下
+    path: path.resolve(__dirname, './dist'),
+  },
 ```
 
-// index.js
-```
-import data from './data/data.xml'
-console.log(data)
-```
+执行npm run build后，将会子啊dist目录下输出 app.bundle.js和index.bundle.js文件。即入口的别名将会对应着出口的 [name]。
 
-import 这四种类型的数据(JSON, CSV, TSV, XML)中的任何一种，所导入的 Data 变量将包含可直接使用的已解析 JSON。
-打开index.html，控制台将打印出这个json对象。
+通常，生成环境下打包时，输出的文件需要填充一个hash作为文件名。
+
+```
+  output: {
+    filename: isDev? '[name].bundle.js' : '[name].[hash].bundle.js',
+    ...
+  },
+```
 

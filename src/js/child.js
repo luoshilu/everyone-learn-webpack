@@ -1,3 +1,3 @@
 module.exports = function child(){
-  console.log('im childs!!')
+  return 'im child';
 }
