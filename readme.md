@@ -1,39 +1,39 @@
 ## 资源管理
 
-### 加载字体
+### 加载数据
 
-和图片文件一样，处理字体也使用file-loader.
+webpack可以加载的资源还有数据，例如：json文件,CSV,TSV和XML，其中json时内置支持的，而CSV,TSV,XML则需要loader的支持。
+
+下载loader
+> cnpm install --save-dev csv-loader xml-loader
 
 webpack.config.js
+
 ```
 module: {
   rules: [
     {
-      test: /\.(woff|woff2|eot|ttf|otf)$/,
+      test: /\.(csv|tsv)$/,
       use: [
-        {
-          loader: 'file-loader',
-          options: {
-            name: `font/[name].[ext]`,
-          }
-        }
+        'csv-loader'
+      ]
+    },
+    {
+      test: /\.xml$/,
+      use: [
+        'xml-loader'
       ]
     }
   ]
-```
-
-main.css
-```
-@font-face {
-  font-family: "my-font";
-  src: url('../font/Arvo-Regular.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-* {
-  font-family: 'my-font'!important;
 }
 ```
 
-执行npm run build后，Arvo-Regular.ttf文件则输出到dist/font目录下，打开index.html，就能看到效果。
+// index.js
+```
+import data from './data/data.xml'
+console.log(data)
+```
+
+import 这四种类型的数据(JSON, CSV, TSV, XML)中的任何一种，所导入的 Data 变量将包含可直接使用的已解析 JSON。
+打开index.html，控制台将打印出这个json对象。
+

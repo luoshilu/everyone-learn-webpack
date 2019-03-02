@@ -4,6 +4,9 @@ import show from './show.js';
 import parent1 from './parent1.js';
 import './css/main.css'
 
+import data from './data/data.xml'
+
+
 function component() {
   var element = document.createElement('div');
   var btn = document.createElement('button');
@@ -11,6 +14,7 @@ function component() {
   btn.innerHTML = 'Click me and check the console!';
   btn.onclick = parent1;
   element.appendChild(btn);
+  console.log(data);
   return element;
 }
 
